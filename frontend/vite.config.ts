@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  publicDir: 'public',
   optimizeDeps: {
     // Only exclude if there are specific issues with lucide-react
     // exclude: ['lucide-react'],
@@ -13,7 +14,9 @@ export default defineConfig({
     host: true,
     port: 5173,
     // Enable history API fallback for client-side routing
-    strictPort: false
+    strictPort: false,
+    // Handle client-side routing
+    historyApiFallback: true
   },
   build: {
     rollupOptions: {
