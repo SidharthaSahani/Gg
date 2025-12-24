@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { menuApi, FoodMenuItem } from '../lib/api';
 import { ChefHat } from 'lucide-react';
 
-const CATEGORIES: ('appetizer' | 'main' | 'dessert' | 'beverage')[] = ['appetizer', 'main', 'dessert', 'beverage'];
-
 export default function FoodMenu() {
   const [foodItems, setFoodItems] = useState<FoodMenuItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { tablesApi, bookingsApi, RestaurantTable, Booking } from '../lib/api';
 import FoodManagement from './FoodManagement';
 import { Plus, Trash2, Unlock, RefreshCw, Upload, Clock } from 'lucide-react';
-const BASE_URL = "https://gg-d25n.onrender.com";
+const BASE_URL = "http://localhost:8080";
 
 
 export default function AdminPanel() {

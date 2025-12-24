@@ -34,9 +34,7 @@ export default function AdminLogin() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
           <div className="flex justify-center mb-6 sm:mb-8">
-            <div className="bg-orange-600 p-3 sm:p-4 rounded-lg">
-              <ShieldCheck className="text-white" size={24} />
-            </div>
+            <img src="/logoHD.png" alt="Grill & Gathering Logo" className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-contain" />
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-2">Admin Login</h1>

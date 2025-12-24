@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AdminPanel from '../components/AdminPanel';
-import { LogOut, Target } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import { LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function AdminDashboard() {
@@ -46,42 +47,53 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <nav className="bg-white shadow-md border-b-4 border-orange-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-3 sm:py-4">
-            <div className="text-xl sm:text-2xl font-bold text-gray-800">
-              Restaurant Admin
-            </div>
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">Admin:</span> {adminEmail}
-              </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-sm sm:text-base"
-              >
-                <LogOut size={16} className="sm:size-18" />
-                Logout
-              </button>
-
-              {/* home button  */}
-              <a
-                href="/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 sm:px-4 sm:py-2 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition text-sm sm:text-base"
-              >
-                Home
-              </a>
-
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar isAdmin={true} adminEmail={adminEmail || undefined} onLogout={handleLogout} />
 
       <main className="max-w-7xl mx-auto py-4 sm:py-6">
         <AdminPanel />
       </main>
+      
+      <footer id="contact-footer" className="bg-gray-800 text-white py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-lg font-bold mb-4">Grill & Gathering</h3>
+              <p className="text-gray-300">Experience the finest dining with our delicious food and excellent service.</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="/" className="text-gray-300 hover:text-white transition">Home</a></li>
+                <li><a href="/about" className="text-gray-300 hover:text-white transition">About Us</a></li>
+                <li><a 
+                  href="#contact-footer" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const footerElement = document.getElementById('contact-footer');
+                    if (footerElement) {
+                      footerElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  Contact
+                </a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Contact Info</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>📞 123456789</li>
+                <li>✉️ info@grillandgathering.com</li>
+                <li>📍 123 Restaurant St, Food City</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+            <p>&copy; {new Date().getFullYear()} Grill & Gathering. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

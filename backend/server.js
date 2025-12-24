@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
@@ -282,7 +282,16 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 app.get('/api/tables', async (req, res) => {
   try {
     const tables = db.collection('restaurant_tables');
-    const data = await tables.find({}).sort({ table_number: 1 }).toArray();
+    let data = await tables.find({}).sort({ table_number: 1 }).toArray();
+    
+    // Convert _id to id for frontend compatibility
+    data = data.map(item => {
+      return { ...item, id: item._id.toString() };
+    }).map(item => {
+      const { _id, ...rest } = item;
+      return rest;
+    });
+    
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -292,8 +301,24 @@ app.get('/api/tables', async (req, res) => {
 app.post('/api/tables', async (req, res) => {
   try {
     const tables = db.collection('restaurant_tables');
+    
+    // Check if a table with the same table_number already exists
+    const existingTable = await tables.findOne({ table_number: req.body.table_number });
+    if (existingTable) {
+      return res.status(409).json({ error: 'A table with this number already exists' });
+    }
+    
+    // Insert the new table
     const result = await tables.insertOne(req.body);
-    res.status(201).json(result);
+    
+    // Return the full table object for consistency
+    const newTable = await tables.findOne({ _id: result.insertedId });
+    
+    // Convert _id to id for frontend compatibility
+    const tableForFrontend = { ...newTable, id: newTable._id.toString() };
+    delete tableForFrontend._id;
+    
+    res.status(201).json(tableForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -302,11 +327,21 @@ app.post('/api/tables', async (req, res) => {
 app.put('/api/tables/:id', async (req, res) => {
   try {
     const tables = db.collection('restaurant_tables');
-    const result = await tables.updateOne(
-      { id: req.params.id },
+    
+    // Update the table
+    await tables.updateOne(
+      { _id: new ObjectId(req.params.id) },
       { $set: req.body }
     );
-    res.json(result);
+    
+    // Get the updated table
+    const updatedTable = await tables.findOne({ _id: new ObjectId(req.params.id) });
+    
+    // Convert _id to id for frontend compatibility
+    const tableForFrontend = { ...updatedTable, id: updatedTable._id.toString() };
+    delete tableForFrontend._id;
+    
+    res.json(tableForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -315,7 +350,7 @@ app.put('/api/tables/:id', async (req, res) => {
 app.delete('/api/tables/:id', async (req, res) => {
   try {
     const tables = db.collection('restaurant_tables');
-    const result = await tables.deleteOne({ id: req.params.id });
+    const result = await tables.deleteOne({ _id: new ObjectId(req.params.id) });
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -326,7 +361,16 @@ app.delete('/api/tables/:id', async (req, res) => {
 app.get('/api/bookings', async (req, res) => {
   try {
     const bookings = db.collection('bookings');
-    const data = await bookings.find({}).sort({ created_at: -1 }).toArray();
+    let data = await bookings.find({}).sort({ created_at: -1 }).toArray();
+    
+    // Convert _id to id for frontend compatibility
+    data = data.map(item => {
+      return { ...item, id: item._id.toString() };
+    }).map(item => {
+      const { _id, ...rest } = item;
+      return rest;
+    });
+    
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -354,7 +398,15 @@ app.post('/api/bookings', async (req, res) => {
     
     // If no existing booking, create the new one
     const result = await bookings.insertOne(req.body);
-    res.status(201).json(result);
+    
+    // Get the created booking
+    const newBooking = await bookings.findOne({ _id: result.insertedId });
+    
+    // Convert _id to id for frontend compatibility
+    const bookingForFrontend = { ...newBooking, id: newBooking._id.toString() };
+    delete bookingForFrontend._id;
+    
+    res.status(201).json(bookingForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -363,11 +415,21 @@ app.post('/api/bookings', async (req, res) => {
 app.put('/api/bookings/:id', async (req, res) => {
   try {
     const bookings = db.collection('bookings');
-    const result = await bookings.updateOne(
-      { id: req.params.id },
+    
+    // Update the booking
+    await bookings.updateOne(
+      { _id: new ObjectId(req.params.id) },
       { $set: req.body }
     );
-    res.json(result);
+    
+    // Get the updated booking
+    const updatedBooking = await bookings.findOne({ _id: new ObjectId(req.params.id) });
+    
+    // Convert _id to id for frontend compatibility
+    const bookingForFrontend = { ...updatedBooking, id: updatedBooking._id.toString() };
+    delete bookingForFrontend._id;
+    
+    res.json(bookingForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -376,7 +438,7 @@ app.put('/api/bookings/:id', async (req, res) => {
 app.delete('/api/bookings/:id', async (req, res) => {
   try {
     const bookings = db.collection('bookings');
-    const result = await bookings.deleteOne({ id: req.params.id });
+    const result = await bookings.deleteOne({ _id: new ObjectId(req.params.id) });
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -417,7 +479,16 @@ app.put('/api/bookings/table/:tableId', async (req, res) => {
 app.get('/api/menu', async (req, res) => {
   try {
     const menuItems = db.collection('food_menu');
-    const data = await menuItems.find({}).sort({ created_at: -1 }).toArray();
+    let data = await menuItems.find({}).sort({ created_at: -1 }).toArray();
+    
+    // Convert _id to id for frontend compatibility
+    data = data.map(item => {
+      return { ...item, id: item._id.toString() };
+    }).map(item => {
+      const { _id, ...rest } = item;
+      return rest;
+    });
+    
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -428,7 +499,15 @@ app.post('/api/menu', async (req, res) => {
   try {
     const menuItems = db.collection('food_menu');
     const result = await menuItems.insertOne(req.body);
-    res.status(201).json(result);
+    
+    // Get the created menu item
+    const newMenuItem = await menuItems.findOne({ _id: result.insertedId });
+    
+    // Convert _id to id for frontend compatibility
+    const menuItemForFrontend = { ...newMenuItem, id: newMenuItem._id.toString() };
+    delete menuItemForFrontend._id;
+    
+    res.status(201).json(menuItemForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -437,11 +516,21 @@ app.post('/api/menu', async (req, res) => {
 app.put('/api/menu/:id', async (req, res) => {
   try {
     const menuItems = db.collection('food_menu');
-    const result = await menuItems.updateOne(
-      { id: req.params.id },
+    
+    // Update the menu item
+    await menuItems.updateOne(
+      { _id: new ObjectId(req.params.id) },
       { $set: req.body }
     );
-    res.json(result);
+    
+    // Get the updated menu item
+    const updatedMenuItem = await menuItems.findOne({ _id: new ObjectId(req.params.id) });
+    
+    // Convert _id to id for frontend compatibility
+    const menuItemForFrontend = { ...updatedMenuItem, id: updatedMenuItem._id.toString() };
+    delete menuItemForFrontend._id;
+    
+    res.json(menuItemForFrontend);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -450,7 +539,7 @@ app.put('/api/menu/:id', async (req, res) => {
 app.delete('/api/menu/:id', async (req, res) => {
   try {
     const menuItems = db.collection('food_menu');
-    const result = await menuItems.deleteOne({ id: req.params.id });
+    const result = await menuItems.deleteOne({ _id: new ObjectId(req.params.id) });
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });

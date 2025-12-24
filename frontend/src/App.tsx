@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import CustomerBooking from './pages/CustomerBooking';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import AboutUs from './pages/AboutUs';
 import { useEffect } from 'react';
 
 function App() {
@@ -32,6 +33,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<CustomerBooking />} />
+      <Route path="/about" element={<AboutUs />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="*" element={<Navigate to="/" replace />} />

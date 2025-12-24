@@ -1,32 +1,60 @@
 import { useNavigate } from 'react-router-dom';
 import UserBooking from '../components/UserBooking';
-import { UtensilsCrossed } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 export default function CustomerBooking() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-3 sm:py-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* <UtensilsCrossed className="text-orange-600" size={24} /> */}
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Grill & Gathering</h1>
-            </div>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 to-amber-50">
+      
+      <Navbar />
 
-            {/* <button
-              onClick={() => navigate('/admin/login')}
-              className="px-3 py-2 sm:px-4 sm:py-2 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition text-sm sm:text-base" > Admin
-            </button> */}
-
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto py-4 sm:py-6">
+      <main className="max-w-7xl mx-auto py-4 sm:py-6 flex-grow w-full">
         <UserBooking />
       </main>
+      
+      <footer id="contact-footer" className="bg-gray-800 text-white py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-lg font-bold mb-4">Grill & Gathering</h3>
+              <p className="text-gray-300">Experience the finest dining with our delicious food and excellent service.</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="/" className="text-gray-300 hover:text-white transition">Home</a></li>
+                <li><a href="/about" className="text-gray-300 hover:text-white transition">About Us</a></li>
+                <li><a 
+                  href="#contact-footer" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const footerElement = document.getElementById('contact-footer');
+                    if (footerElement) {
+                      footerElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  Contact
+                </a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Contact Info</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>📞 123456789</li>
+                <li>✉️ info@grillandgathering.com</li>
+                <li>📍 123 Restaurant St, Food City</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+            <p>&copy; {new Date().getFullYear()} Grill & Gathering. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

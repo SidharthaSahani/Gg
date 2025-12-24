@@ -1,5 +1,5 @@
 // Change this in your frontend API calls:
-const API_BASE_URL = 'https://gg-d25n.onrender.com';
+export const API_BASE_URL = 'http://localhost:8080';
 
 // Custom error class to handle HTTP errors
 class HttpError extends Error {
@@ -35,11 +35,94 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
   }
 }
 
+// // Restaurant tables API
+// export const tablesApi = {
+//   getAll: () => apiRequest<RestaurantTable[]>('/tables'),
+//   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) =>
+//     apiRequest<RestaurantTable>('/tables', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...table,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   update: (id: string, updates: Partial<RestaurantTable>) =>
+//     apiRequest<RestaurantTable>(`/tables/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/tables/${id}`, { method: 'DELETE' })
+// };
+
+// // Bookings API
+// export const bookingsApi = {
+//   getAll: () => apiRequest<Booking[]>('/bookings'),
+//   create: (booking: Omit<Booking, 'id' | 'created_at'>) =>
+//     apiRequest<Booking>('/bookings', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...booking,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         status: 'confirmed' // Default status for new bookings
+//       })
+//     }),
+//   update: (id: string, updates: Partial<Booking>) =>
+//     apiRequest<Booking>(`/bookings/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/bookings/${id}`, { method: 'DELETE' }),
+//   deleteByTableId: (tableId: string) => apiRequest<void>(`/bookings/table/${tableId}`, { method: 'DELETE' }),
+//   // New method to mark bookings as completed
+//   completeByTableId: (tableId: string) =>
+//     apiRequest<void>(`/bookings/table/${tableId}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({ status: 'completed' })
+//     })
+// };
+
+// // Food menu API
+// export const menuApi = {
+//   getAll: () => apiRequest<FoodMenuItem[]>('/menu'),
+//   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) =>
+//     apiRequest<FoodMenuItem>('/menu', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...item,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   update: (id: string, updates: Partial<FoodMenuItem>) =>
+//     apiRequest<FoodMenuItem>(`/menu/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/menu/${id}`, { method: 'DELETE' })
+// };
+
+
+//update wala
+
+
 // Restaurant tables API
 export const tablesApi = {
-  getAll: () => apiRequest<RestaurantTable[]>('/tables'),
+  getAll: () => apiRequest<RestaurantTable[]>('/api/tables'),
   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) => 
-    apiRequest<RestaurantTable>('/tables', {
+    apiRequest<RestaurantTable>('/api/tables', {
       method: 'POST',
       body: JSON.stringify({
         ...table,
@@ -49,42 +132,41 @@ export const tablesApi = {
       })
     }),
   update: (id: string, updates: Partial<RestaurantTable>) => 
-    apiRequest<RestaurantTable>(`/tables/${id}`, {
+    apiRequest<RestaurantTable>(`/api/tables/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
         ...updates,
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/tables/${id}`, { method: 'DELETE' })
+  delete: (id: string) => apiRequest<void>(`/api/tables/${id}`, { method: 'DELETE' })
 };
 
 // Bookings API
 export const bookingsApi = {
-  getAll: () => apiRequest<Booking[]>('/bookings'),
+  getAll: () => apiRequest<Booking[]>('/api/bookings'),
   create: (booking: Omit<Booking, 'id' | 'created_at'>) => 
-    apiRequest<Booking>('/bookings', {
+    apiRequest<Booking>('/api/bookings', {
       method: 'POST',
       body: JSON.stringify({
         ...booking,
         id: Math.random().toString(36).substr(2, 9),
         created_at: new Date().toISOString(),
-        status: 'confirmed' // Default status for new bookings
+        status: 'confirmed'
       })
     }),
   update: (id: string, updates: Partial<Booking>) => 
-    apiRequest<Booking>(`/bookings/${id}`, {
+    apiRequest<Booking>(`/api/bookings/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
         ...updates,
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/bookings/${id}`, { method: 'DELETE' }),
-  deleteByTableId: (tableId: string) => apiRequest<void>(`/bookings/table/${tableId}`, { method: 'DELETE' }),
-  // New method to mark bookings as completed
+  delete: (id: string) => apiRequest<void>(`/api/bookings/${id}`, { method: 'DELETE' }),
+  deleteByTableId: (tableId: string) => apiRequest<void>(`/api/bookings/table/${tableId}`, { method: 'DELETE' }),
   completeByTableId: (tableId: string) => 
-    apiRequest<void>(`/bookings/table/${tableId}`, { 
+    apiRequest<void>(`/api/bookings/table/${tableId}`, { 
       method: 'PUT',
       body: JSON.stringify({ status: 'completed' })
     })
@@ -92,9 +174,9 @@ export const bookingsApi = {
 
 // Food menu API
 export const menuApi = {
-  getAll: () => apiRequest<FoodMenuItem[]>('/menu'),
+  getAll: () => apiRequest<FoodMenuItem[]>('/api/menu'),
   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) => 
-    apiRequest<FoodMenuItem>('/menu', {
+    apiRequest<FoodMenuItem>('/api/menu', {
       method: 'POST',
       body: JSON.stringify({
         ...item,
@@ -104,14 +186,14 @@ export const menuApi = {
       })
     }),
   update: (id: string, updates: Partial<FoodMenuItem>) => 
-    apiRequest<FoodMenuItem>(`/menu/${id}`, {
+    apiRequest<FoodMenuItem>(`/api/menu/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
         ...updates,
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/menu/${id}`, { method: 'DELETE' })
+  delete: (id: string) => apiRequest<void>(`/api/menu/${id}`, { method: 'DELETE' })
 };
 
 // Data interfaces (matching the MongoDB documents)

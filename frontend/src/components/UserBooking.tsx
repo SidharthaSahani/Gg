@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { tablesApi, bookingsApi, RestaurantTable, Booking } from '../lib/api';
+import { tablesApi, bookingsApi, RestaurantTable, Booking, API_BASE_URL } from '../lib/api';
 import TableGrid from './TableGrid';
 import BookingForm, { BookingFormData } from './BookingForm';
 import FoodMenu from './FoodMenu';
@@ -86,7 +86,7 @@ export default function UserBooking() {
   const handleBookingSubmit = async (bookingData: BookingFormData) => {
     try {
       // Add the booking
-      const response = await bookingsApi.create(bookingData);
+      await bookingsApi.create(bookingData);
       
       // Refresh bookings immediately to prevent race conditions
       await fetchBookings();

@@ -12,11 +12,11 @@ export default defineConfig({
   server: {
     // Add host and port for better compatibility
     host: true,
-    port: 5173,
+    port: 3000,
     // Enable history API fallback for client-side routing
-    strictPort: false,
+    strictPort: true,
     // Handle client-side routing
-    historyApiFallback: true
+    // historyApiFallback: true
   },
   build: {
     rollupOptions: {

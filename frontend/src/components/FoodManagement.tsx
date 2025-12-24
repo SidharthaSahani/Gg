@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { menuApi, FoodMenuItem } from '../lib/api';
+import { menuApi, FoodMenuItem, API_BASE_URL } from '../lib/api';
 import { Plus, Trash2, Edit2, RefreshCw } from 'lucide-react';
 
 interface FoodFormData {
@@ -52,7 +52,7 @@ export default function FoodManagement() {
       const formData = new FormData();
       formData.append('image', file);
       
-      const response = await fetch(`${BASE_URL}/api/upload`, {
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });
