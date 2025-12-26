@@ -14,7 +14,7 @@ export default function CustomerBooking() {
         <UserBooking />
       </main>
       
-      <footer id="contact-footer" className="bg-gray-800 text-white py-8 mt-auto">
+      <footer id="contact-footer" className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -49,6 +49,21 @@ export default function CustomerBooking() {
                 <li>✉️ info@grillandgathering.com</li>
                 <li>📍 Grills and Gather ,Balkot </li>
               </ul>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-700">
+            <h3 className="text-lg font-bold mb-4">Find Us</h3>
+            <div className="rounded-lg overflow-hidden border border-gray-300">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d403.7530625579317!2d85.3660333256802!3d27.664689598970888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1b093dec14f3%3A0x90b02fb7b0713ace!2sGrills%20and%20Gather!5e1!3m2!1sen!2snp!4v1766763639443!5m2!1sen!2snp" 
+                width="100%" 
+                height="300" 
+                style={{ border: 0 }} 
+                allowFullScreen={true} 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Grill & Gathering Location Map"
+              />
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">

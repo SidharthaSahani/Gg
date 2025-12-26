@@ -37,14 +37,16 @@ export default function Navbar({ isAdmin = false, adminEmail, onLogout }: Navbar
         <div className="flex justify-between items-center h-20">
           {/* Left side: Logo and Restaurant Name */}
           <div className="flex items-center gap-4">
-            <img 
-              src="/logoHD.png" 
-              alt="Grill & Gathering Logo" 
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-contain" 
-            />
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-              {isAdmin ? 'Restaurant Admin' : 'Grill & Gathering'}
-            </h1>
+            <a href="/" className="flex items-center gap-4">
+              <img 
+                src="/logoHD.png" 
+                alt="Grill & Gathering Logo" 
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-contain" 
+              />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+                {isAdmin ? 'Restaurant Admin' : 'Grill & Gathering'}
+              </h1>
+            </a>
           </div>
 
           {/* Desktop Navigation - Hidden on mobile */}
