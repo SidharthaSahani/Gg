@@ -1,12 +1,20 @@
-// Change this in your frontend API calls:
-export const API_BASE_URL = 'http://localhost:8080';
+// lib/api.ts - FIXED VERSION
+export const API_BASE_URL = 'https://gg-d25n.onrender.com';
 
-// Custom error class to handle HTTP errors
+// Custom error class
 class HttpError extends Error {
   constructor(public status: number, message: string) {
     super(message);
     this.name = 'HttpError';
   }
+}
+
+// Standard API response structure from backend
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  error?: string;
 }
 
 // Helper function to make API requests
@@ -25,112 +33,70 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
     const response = await fetch(url, config);
     
     if (!response.ok) {
-      throw new HttpError(response.status, `HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new HttpError(
+        response.status, 
+        errorData.error || `HTTP error! status: ${response.status}`
+      );
     }
     
-    return await response.json();
+    // Handle new backend response format
+    const result: ApiResponse<T> = await response.json();
+    
+    // If backend returns { success, data }, extract data
+    if ('data' in result) {
+      return result.data as T;
+    }
+    
+    // Otherwise return the whole response (for legacy endpoints)
+    return result as T;
   } catch (error) {
     console.error(`API request failed: ${error}`);
     throw error;
   }
 }
 
-// // Restaurant tables API
-// export const tablesApi = {
-//   getAll: () => apiRequest<RestaurantTable[]>('/tables'),
-//   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) =>
-//     apiRequest<RestaurantTable>('/tables', {
-//       method: 'POST',
-//       body: JSON.stringify({
-//         ...table,
-//         id: Math.random().toString(36).substr(2, 9),
-//         created_at: new Date().toISOString(),
-//         updated_at: new Date().toISOString()
-//       })
-//     }),
-//   update: (id: string, updates: Partial<RestaurantTable>) =>
-//     apiRequest<RestaurantTable>(`/tables/${id}`, {
-//       method: 'PUT',
-//       body: JSON.stringify({
-//         ...updates,
-//         updated_at: new Date().toISOString()
-//       })
-//     }),
-//   delete: (id: string) => apiRequest<void>(`/tables/${id}`, { method: 'DELETE' })
-// };
+// Helper for multipart form data (file uploads)
+async function apiUpload<T>(endpoint: string, formData: FormData): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+      // Don't set Content-Type, browser will set it with boundary
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new HttpError(
+        response.status, 
+        errorData.error || `Upload failed! status: ${response.status}`
+      );
+    }
+    
+    const result: ApiResponse<T> = await response.json();
+    return 'data' in result ? (result.data as T) : (result as T);
+  } catch (error) {
+    console.error(`Upload failed: ${error}`);
+    throw error;
+  }
+}
 
-// // Bookings API
-// export const bookingsApi = {
-//   getAll: () => apiRequest<Booking[]>('/bookings'),
-//   create: (booking: Omit<Booking, 'id' | 'created_at'>) =>
-//     apiRequest<Booking>('/bookings', {
-//       method: 'POST',
-//       body: JSON.stringify({
-//         ...booking,
-//         id: Math.random().toString(36).substr(2, 9),
-//         created_at: new Date().toISOString(),
-//         status: 'confirmed' // Default status for new bookings
-//       })
-//     }),
-//   update: (id: string, updates: Partial<Booking>) =>
-//     apiRequest<Booking>(`/bookings/${id}`, {
-//       method: 'PUT',
-//       body: JSON.stringify({
-//         ...updates,
-//         updated_at: new Date().toISOString()
-//       })
-//     }),
-//   delete: (id: string) => apiRequest<void>(`/bookings/${id}`, { method: 'DELETE' }),
-//   deleteByTableId: (tableId: string) => apiRequest<void>(`/bookings/table/${tableId}`, { method: 'DELETE' }),
-//   // New method to mark bookings as completed
-//   completeByTableId: (tableId: string) =>
-//     apiRequest<void>(`/bookings/table/${tableId}`, {
-//       method: 'PUT',
-//       body: JSON.stringify({ status: 'completed' })
-//     })
-// };
-
-// // Food menu API
-// export const menuApi = {
-//   getAll: () => apiRequest<FoodMenuItem[]>('/menu'),
-//   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) =>
-//     apiRequest<FoodMenuItem>('/menu', {
-//       method: 'POST',
-//       body: JSON.stringify({
-//         ...item,
-//         id: Math.random().toString(36).substr(2, 9),
-//         created_at: new Date().toISOString(),
-//         updated_at: new Date().toISOString()
-//       })
-//     }),
-//   update: (id: string, updates: Partial<FoodMenuItem>) =>
-//     apiRequest<FoodMenuItem>(`/menu/${id}`, {
-//       method: 'PUT',
-//       body: JSON.stringify({
-//         ...updates,
-//         updated_at: new Date().toISOString()
-//       })
-//     }),
-//   delete: (id: string) => apiRequest<void>(`/menu/${id}`, { method: 'DELETE' })
-// };
-
-
-//update wala
-
-
-// Restaurant tables API
+// ==================== TABLES API ====================
 export const tablesApi = {
   getAll: () => apiRequest<RestaurantTable[]>('/api/tables'),
+  
   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) => 
     apiRequest<RestaurantTable>('/api/tables', {
       method: 'POST',
       body: JSON.stringify({
         ...table,
-        id: Math.random().toString(36).substr(2, 9),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
     }),
+    
   update: (id: string, updates: Partial<RestaurantTable>) => 
     apiRequest<RestaurantTable>(`/api/tables/${id}`, {
       method: 'PUT',
@@ -139,12 +105,15 @@ export const tablesApi = {
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/api/tables/${id}`, { method: 'DELETE' })
+    
+  delete: (id: string) => 
+    apiRequest<void>(`/api/tables/${id}`, { method: 'DELETE' })
 };
 
-// Bookings API
+// ==================== BOOKINGS API ====================
 export const bookingsApi = {
   getAll: () => apiRequest<Booking[]>('/api/bookings'),
+  
   create: (booking: Omit<Booking, 'id' | 'created_at'>) => 
     apiRequest<Booking>('/api/bookings', {
       method: 'POST',
@@ -155,6 +124,7 @@ export const bookingsApi = {
         status: 'confirmed'
       })
     }),
+    
   update: (id: string, updates: Partial<Booking>) => 
     apiRequest<Booking>(`/api/bookings/${id}`, {
       method: 'PUT',
@@ -163,8 +133,13 @@ export const bookingsApi = {
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/api/bookings/${id}`, { method: 'DELETE' }),
-  deleteByTableId: (tableId: string) => apiRequest<void>(`/api/bookings/table/${tableId}`, { method: 'DELETE' }),
+    
+  delete: (id: string) => 
+    apiRequest<void>(`/api/bookings/${id}`, { method: 'DELETE' }),
+    
+  deleteByTableId: (tableId: string) => 
+    apiRequest<void>(`/api/bookings/table/${tableId}`, { method: 'DELETE' }),
+    
   completeByTableId: (tableId: string) => 
     apiRequest<void>(`/api/bookings/table/${tableId}`, { 
       method: 'PUT',
@@ -172,9 +147,10 @@ export const bookingsApi = {
     })
 };
 
-// Food menu API
+// ==================== MENU API ====================
 export const menuApi = {
   getAll: () => apiRequest<FoodMenuItem[]>('/api/menu'),
+  
   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) => 
     apiRequest<FoodMenuItem>('/api/menu', {
       method: 'POST',
@@ -185,6 +161,7 @@ export const menuApi = {
         updated_at: new Date().toISOString()
       })
     }),
+    
   update: (id: string, updates: Partial<FoodMenuItem>) => 
     apiRequest<FoodMenuItem>(`/api/menu/${id}`, {
       method: 'PUT',
@@ -193,10 +170,59 @@ export const menuApi = {
         updated_at: new Date().toISOString()
       })
     }),
-  delete: (id: string) => apiRequest<void>(`/api/menu/${id}`, { method: 'DELETE' })
+    
+  delete: (id: string) => 
+    apiRequest<void>(`/api/menu/${id}`, { method: 'DELETE' })
 };
 
-// Data interfaces (matching the MongoDB documents)
+// ==================== CAROUSEL API ====================
+export const carouselApi = {
+  getAll: () => apiRequest<string[]>('/api/carousel-images'),
+  
+  updateAll: (images: string[]) => 
+    apiRequest<{ images: string[] }>('/api/carousel-images', {
+      method: 'POST',
+      body: JSON.stringify({ images })
+    }),
+    
+  delete: (index: number) => 
+    apiRequest<{ images: string[] }>(`/api/carousel-images/${index}`, {
+      method: 'DELETE'
+    }),
+    
+  update: async (index: number, file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
+      method: 'PUT',
+      body: formData
+    }).then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new HttpError(response.status, errorData.error || 'Update failed');
+      }
+      const result: ApiResponse<{ images: string[] }> = await response.json();
+      return 'data' in result ? result.data : result;
+    });
+  },
+  
+  upload: (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return apiUpload<{ url: string }>('/api/upload-carousel', formData);
+  }
+};
+
+// ==================== UPLOAD API ====================
+export const uploadApi = {
+  uploadImage: (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return apiUpload<{ url: string }>('/api/upload', formData);
+  }
+};
+
+// ==================== DATA INTERFACES ====================
 export interface RestaurantTable {
   id: string;
   table_number: string;
@@ -217,8 +243,8 @@ export interface Booking {
   booking_time: string;
   special_requests?: string;
   created_at: string;
-  status?: 'pending' | 'confirmed' | 'completed' | 'cancelled'; // Add status field
-  completed_at?: string; // Add completed timestamp
+  status?: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  completed_at?: string;
 }
 
 export interface FoodMenuItem {
@@ -232,3 +258,10 @@ export interface FoodMenuItem {
   created_at: string;
   updated_at: string;
 }
+
+// ==================== CONSTANTS ====================
+export const FALLBACK_CAROUSEL_IMAGES = [
+  'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
+];

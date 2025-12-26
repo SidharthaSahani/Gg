@@ -10,7 +10,17 @@ exports.getAllTables = async (req, res) => {
     const tables = db.collection('restaurant_tables');
     const data = await tables.find({}).sort({ table_number: 1 }).toArray();
     
-    sendSuccess(res, formatDocuments(data));
+    // Format all tables to match frontend expectations
+    const formattedData = data.map(table => ({
+      id: table._id.toString(),
+      table_number: table.table_number,
+      capacity: table.capacity,
+      status: table.status,
+      created_at: table.created_at,
+      updated_at: table.updated_at
+    }));
+    
+    sendSuccess(res, formattedData);
   } catch (error) {
     sendError(res, error);
   }
@@ -31,11 +41,29 @@ exports.createTable = async (req, res) => {
       });
     }
     
-    // Insert new table
-    const result = await tables.insertOne(req.body);
-    const newTable = await tables.findOne({ _id: result.insertedId });
+    // Prepare table data, ensuring required fields
+    const tableData = {
+      ...req.body,
+      created_at: req.body.created_at || new Date().toISOString(),
+      updated_at: req.body.updated_at || new Date().toISOString(),
+      status: req.body.status || 'available'
+    };
     
-    sendCreated(res, formatDocument(newTable), 'Table created successfully');
+    // Insert new table
+    const result = await tables.insertOne(tableData);
+    let newTable = await tables.findOne({ _id: result.insertedId });
+    
+    // Format the table object to match frontend expectations
+    newTable = {
+      id: newTable._id.toString(),
+      table_number: newTable.table_number,
+      capacity: newTable.capacity,
+      status: newTable.status,
+      created_at: newTable.created_at,
+      updated_at: newTable.updated_at
+    };
+    
+    sendCreated(res, newTable, 'Table created successfully');
   } catch (error) {
     sendError(res, error);
   }
@@ -47,14 +75,29 @@ exports.updateTable = async (req, res) => {
     const db = getDatabase();
     const tables = db.collection('restaurant_tables');
     
+    const updateData = {
+      ...req.body,
+      updated_at: new Date().toISOString()
+    };
+    
     await tables.updateOne(
       { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
+      { $set: updateData }
     );
     
-    const updatedTable = await tables.findOne({ _id: new ObjectId(req.params.id) });
+    let updatedTable = await tables.findOne({ _id: new ObjectId(req.params.id) });
     
-    sendSuccess(res, formatDocument(updatedTable), 'Table updated successfully');
+    // Format the table object to match frontend expectations
+    updatedTable = {
+      id: updatedTable._id.toString(),
+      table_number: updatedTable.table_number,
+      capacity: updatedTable.capacity,
+      status: updatedTable.status,
+      created_at: updatedTable.created_at,
+      updated_at: updatedTable.updated_at
+    };
+    
+    sendSuccess(res, updatedTable, 'Table updated successfully');
   } catch (error) {
     sendError(res, error);
   }

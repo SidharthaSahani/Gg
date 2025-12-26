@@ -91,6 +91,12 @@ export default function Navbar({ isAdmin = false, adminEmail, onLogout }: Navbar
                   </a>
                 </>
               )}
+              {/* Admin button for non-admin users */}
+              {!isAdmin && (
+                <Link to="/admin/login" className="px-4 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 rounded-lg transition text-base">
+                  Admin
+                </Link>
+              )}
             </div>
           </div>
 
@@ -165,6 +171,14 @@ export default function Navbar({ isAdmin = false, adminEmail, onLogout }: Navbar
                   >
                     Contact
                   </a>
+                  {/* Admin button for non-admin users */}
+                  <Link 
+                    to="/admin/login" 
+                    className="px-4 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 rounded-lg transition text-base"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Admin
+                  </Link>
                 </>
               )}
             </div>

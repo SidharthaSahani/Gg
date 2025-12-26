@@ -1,11 +1,14 @@
+// ============================================
+// FILE: components/admin/AdminPanel.tsx (Main Component)
+// ============================================
 import { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { useTables } from '../hooks/useTables';
-import { useBookings } from '../hooks/useBookings';
-import { CarouselManagement } from './admin/CarouselManagement';
-import { TablesManagement } from './admin/TablesManagement';
-import { BookingsTable } from './admin/BookingsTable';
-import FoodManagement from './FoodManagement';
+import { useTables } from '../../hooks/useTables';
+import { useBookings } from '../../hooks/useBookings';
+import { CarouselManagement } from './CarouselManagement';
+import { TablesManagement } from './TablesManagement';
+import { BookingsTable } from './BookingsTable';
+import FoodManagement from '../FoodManagement';
 
 export default function AdminPanel() {
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -15,13 +18,13 @@ export default function AdminPanel() {
   const { fetchTables } = useTables();
   const { fetchBookings } = useBookings(selectedDate);
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(e.target.value);
-  };
-
   const handleRefreshAll = () => {
     fetchTables();
     fetchBookings();
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(e.target.value);
   };
 
   return (

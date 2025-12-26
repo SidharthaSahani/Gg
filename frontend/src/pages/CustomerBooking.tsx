@@ -44,9 +44,10 @@ export default function CustomerBooking() {
             <div>
               <h3 className="text-lg font-bold mb-4">Contact Info</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>📞 123456789</li>
+                <li>📞 9840923097 </li>
+                <li>📞 9848675285 </li>
                 <li>✉️ info@grillandgathering.com</li>
-                <li>📍 123 Restaurant St, Food City</li>
+                <li>📍 Grills and Gather ,Balkot </li>
               </ul>
             </div>
           </div>

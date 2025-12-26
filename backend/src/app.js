@@ -42,7 +42,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/carousel-images', carouselRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/upload-carousel', uploadRoutes);
+app.use('/api/upload-carousel', uploadRoutes); // For carousel uploads
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

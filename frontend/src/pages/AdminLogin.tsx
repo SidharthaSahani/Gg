@@ -67,7 +67,7 @@ export default function AdminLogin() {
                 className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition text-sm sm:text-base"
                 placeholder="admin@restaurant.com"
               />
-              <p className="text-xs text-gray-500 mt-1">Demo: admin@restaurant.com</p>
+              {/* <p className="text-xs text-gray-500 mt-1">Demo: admin@restaurant.com</p> */}
             </div>
 
             <div>
@@ -82,7 +82,7 @@ export default function AdminLogin() {
                 className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition text-sm sm:text-base"
                 placeholder="••••••••"
               />
-              <p className="text-xs text-gray-500 mt-1">Demo: admin123</p>
+              {/* <p className="text-xs text-gray-500 mt-1">Demo: admin123</p> */}
             </div>
 
             <button
@@ -94,11 +94,11 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          <div className="mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
+          {/* <div className="mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-xs sm:text-sm text-blue-700 font-medium">Demo Credentials:</p>
             <p className="text-xs sm:text-sm text-blue-600 mt-1">Email: admin@restaurant.com</p>
             <p className="text-xs sm:text-sm text-blue-600">Password: admin12345</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

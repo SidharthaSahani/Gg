@@ -1,0 +1,234 @@
+// // Change this in your frontend API calls:
+// export const API_BASE_URL = 'https://gg-d25n.onrender.com';
+
+// // Custom error class to handle HTTP errors
+// class HttpError extends Error {
+//   constructor(public status: number, message: string) {
+//     super(message);
+//     this.name = 'HttpError';
+//   }
+// }
+
+// // Helper function to make API requests
+// async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+//   const url = `${API_BASE_URL}${endpoint}`;
+  
+//   const config: RequestInit = {
+//     headers: {
+//       'Content-Type': 'application/json',
+//       ...options.headers,
+//     },
+//     ...options,
+//   };
+
+//   try {
+//     const response = await fetch(url, config);
+    
+//     if (!response.ok) {
+//       throw new HttpError(response.status, `HTTP error! status: ${response.status}`);
+//     }
+    
+//     return await response.json();
+//   } catch (error) {
+//     console.error(`API request failed: ${error}`);
+//     throw error;
+//   }
+// }
+
+// // // Restaurant tables API
+// // export const tablesApi = {
+// //   getAll: () => apiRequest<RestaurantTable[]>('/tables'),
+// //   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) =>
+// //     apiRequest<RestaurantTable>('/tables', {
+// //       method: 'POST',
+// //       body: JSON.stringify({
+// //         ...table,
+// //         id: Math.random().toString(36).substr(2, 9),
+// //         created_at: new Date().toISOString(),
+// //         updated_at: new Date().toISOString()
+// //       })
+// //     }),
+// //   update: (id: string, updates: Partial<RestaurantTable>) =>
+// //     apiRequest<RestaurantTable>(`/tables/${id}`, {
+// //       method: 'PUT',
+// //       body: JSON.stringify({
+// //         ...updates,
+// //         updated_at: new Date().toISOString()
+// //       })
+// //     }),
+// //   delete: (id: string) => apiRequest<void>(`/tables/${id}`, { method: 'DELETE' })
+// // };
+
+// // // Bookings API
+// // export const bookingsApi = {
+// //   getAll: () => apiRequest<Booking[]>('/bookings'),
+// //   create: (booking: Omit<Booking, 'id' | 'created_at'>) =>
+// //     apiRequest<Booking>('/bookings', {
+// //       method: 'POST',
+// //       body: JSON.stringify({
+// //         ...booking,
+// //         id: Math.random().toString(36).substr(2, 9),
+// //         created_at: new Date().toISOString(),
+// //         status: 'confirmed' // Default status for new bookings
+// //       })
+// //     }),
+// //   update: (id: string, updates: Partial<Booking>) =>
+// //     apiRequest<Booking>(`/bookings/${id}`, {
+// //       method: 'PUT',
+// //       body: JSON.stringify({
+// //         ...updates,
+// //         updated_at: new Date().toISOString()
+// //       })
+// //     }),
+// //   delete: (id: string) => apiRequest<void>(`/bookings/${id}`, { method: 'DELETE' }),
+// //   deleteByTableId: (tableId: string) => apiRequest<void>(`/bookings/table/${tableId}`, { method: 'DELETE' }),
+// //   // New method to mark bookings as completed
+// //   completeByTableId: (tableId: string) =>
+// //     apiRequest<void>(`/bookings/table/${tableId}`, {
+// //       method: 'PUT',
+// //       body: JSON.stringify({ status: 'completed' })
+// //     })
+// // };
+
+// // // Food menu API
+// // export const menuApi = {
+// //   getAll: () => apiRequest<FoodMenuItem[]>('/menu'),
+// //   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) =>
+// //     apiRequest<FoodMenuItem>('/menu', {
+// //       method: 'POST',
+// //       body: JSON.stringify({
+// //         ...item,
+// //         id: Math.random().toString(36).substr(2, 9),
+// //         created_at: new Date().toISOString(),
+// //         updated_at: new Date().toISOString()
+// //       })
+// //     }),
+// //   update: (id: string, updates: Partial<FoodMenuItem>) =>
+// //     apiRequest<FoodMenuItem>(`/menu/${id}`, {
+// //       method: 'PUT',
+// //       body: JSON.stringify({
+// //         ...updates,
+// //         updated_at: new Date().toISOString()
+// //       })
+// //     }),
+// //   delete: (id: string) => apiRequest<void>(`/menu/${id}`, { method: 'DELETE' })
+// // };
+
+
+// //update wala
+
+
+// // Restaurant tables API
+// export const tablesApi = {
+//   getAll: () => apiRequest<RestaurantTable[]>('/api/tables'),
+//   create: (table: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>) => 
+//     apiRequest<RestaurantTable>('/api/tables', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...table,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   update: (id: string, updates: Partial<RestaurantTable>) => 
+//     apiRequest<RestaurantTable>(`/api/tables/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/api/tables/${id}`, { method: 'DELETE' })
+// };
+
+// // Bookings API
+// export const bookingsApi = {
+//   getAll: () => apiRequest<Booking[]>('/api/bookings'),
+//   create: (booking: Omit<Booking, 'id' | 'created_at'>) => 
+//     apiRequest<Booking>('/api/bookings', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...booking,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         status: 'confirmed'
+//       })
+//     }),
+//   update: (id: string, updates: Partial<Booking>) => 
+//     apiRequest<Booking>(`/api/bookings/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/api/bookings/${id}`, { method: 'DELETE' }),
+//   deleteByTableId: (tableId: string) => apiRequest<void>(`/api/bookings/table/${tableId}`, { method: 'DELETE' }),
+//   completeByTableId: (tableId: string) => 
+//     apiRequest<void>(`/api/bookings/table/${tableId}`, { 
+//       method: 'PUT',
+//       body: JSON.stringify({ status: 'completed' })
+//     })
+// };
+
+// // Food menu API
+// export const menuApi = {
+//   getAll: () => apiRequest<FoodMenuItem[]>('/api/menu'),
+//   create: (item: Omit<FoodMenuItem, 'id' | 'created_at' | 'updated_at'>) => 
+//     apiRequest<FoodMenuItem>('/api/menu', {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         ...item,
+//         id: Math.random().toString(36).substr(2, 9),
+//         created_at: new Date().toISOString(),
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   update: (id: string, updates: Partial<FoodMenuItem>) => 
+//     apiRequest<FoodMenuItem>(`/api/menu/${id}`, {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         ...updates,
+//         updated_at: new Date().toISOString()
+//       })
+//     }),
+//   delete: (id: string) => apiRequest<void>(`/api/menu/${id}`, { method: 'DELETE' })
+// };
+
+// // Data interfaces (matching the MongoDB documents)
+// export interface RestaurantTable {
+//   id: string;
+//   table_number: string;
+//   capacity: number;
+//   status: 'available' | 'booked';
+//   created_at: string;
+//   updated_at: string;
+// }
+
+// export interface Booking {
+//   id: string;
+//   table_id: string;
+//   customer_name: string;
+//   customer_email: string;
+//   customer_phone: string;
+//   number_of_guests: number;
+//   booking_date: string;
+//   booking_time: string;
+//   special_requests?: string;
+//   created_at: string;
+//   status?: 'pending' | 'confirmed' | 'completed' | 'cancelled'; // Add status field
+//   completed_at?: string; // Add completed timestamp
+// }
+
+// export interface FoodMenuItem {
+//   id: string;
+//   name: string;
+//   description: string;
+//   price: number;
+//   image_url: string;
+//   category: 'appetizer' | 'main' | 'dessert' | 'beverage';
+//   available: boolean;
+//   created_at: string;
+//   updated_at: string;
+// }
