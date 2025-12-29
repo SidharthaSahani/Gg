@@ -83,6 +83,7 @@ export default function AdminDashboard() {
             <div>
               <h3 className="text-lg font-bold mb-4">Contact Info</h3>
               <ul className="space-y-2 text-gray-300">
+                {/* <a href="9840923097"> 📞 9840923097</a> */}
                 <li>📞 9840923097 </li>
                 <li>📞 9848675285 </li>
                 <li>✉️ info@grillandgathering.com</li>

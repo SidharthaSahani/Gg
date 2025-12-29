@@ -40,7 +40,7 @@ export default function Navbar({ isAdmin = false, adminEmail, onLogout }: Navbar
             <a href="/" className="flex items-center gap-4">
               <img
                 src="/logoHD.png" 
-                alt="Grill & Gathering Logo" 
+                alt="Grill & Gather Logo" 
                 className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-contain" 
               />
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">

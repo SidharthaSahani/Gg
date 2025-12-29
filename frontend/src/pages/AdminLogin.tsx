@@ -94,11 +94,7 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* <div className="mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-xs sm:text-sm text-blue-700 font-medium">Demo Credentials:</p>
-            <p className="text-xs sm:text-sm text-blue-600 mt-1">Email: admin@restaurant.com</p>
-            <p className="text-xs sm:text-sm text-blue-600">Password: admin12345</p>
-          </div> */}
+          
         </div>
       </div>
     </div>

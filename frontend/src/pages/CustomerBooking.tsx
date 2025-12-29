@@ -44,8 +44,9 @@ export default function CustomerBooking() {
             <div>
               <h3 className="text-lg font-bold mb-4">Contact Info</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>📞 9840923097 </li>
-                <li>📞 9848675285 </li>
+               <li><a href="tel:9840923097"className='hover:text-blue-600' >📞 9840923097</a> </li> 
+            
+               <li><a href='tel:9848675285' className='hover:text-blue-600'>📞 9848675285 </a> </li> 
                 <li>✉️ info@grillandgathering.com</li>
                 <li>📍 Grills and Gather ,Balkot </li>
               </ul>
@@ -62,7 +63,7 @@ export default function CustomerBooking() {
                 allowFullScreen={true} 
                 loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Grill & Gathering Location Map"
+                title="Grill & Gather Location Map"
               />
             </div>
           </div>

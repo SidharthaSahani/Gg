@@ -21,13 +21,13 @@ app.use(express.json());
 app.use('/uploads', express.static(uploadDir));
 
 // Health check
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Restaurant Table Booking API',
-    version: '1.0.0',
-    status: 'Running'
-  });
-});
+// app.get('/', (req, res) => {
+//   res.json({ 
+//     message: 'Restaurant Table Booking API',
+//     version: '1.0.0',
+//     status: 'Running'
+//   });
+// });
 
 app.get('/health', (req, res) => {
   res.json({ 
@@ -44,15 +44,36 @@ app.use('/api/carousel-images', carouselRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/upload-carousel', uploadRoutes); // For carousel uploads
 
+
+
+// 404 handler
+// app.use((req, res) => {
+//   res.status(404).json({
+//     success: false,
+//     error: 'Route not found'
+//   });
+// });
+
+
+
+// ================================
+// SERVE FRONTEND (PRODUCTION)
+// ================================
+const __dirname1 = path.resolve(__dirname, '../../');
+
+app.use(express.static(path.join(__dirname1, 'frontend/dist')));
+
+// React Router fallback
+app.get('*', (req, res) => {
+  res.sendFile(
+    path.join(__dirname1, 'frontend/dist', 'index.html')
+  );
+});
+
+
+
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found'
-  });
-});
 
 module.exports = app;
