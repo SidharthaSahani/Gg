@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Plus, Trash2, Unlock, RefreshCw } from 'lucide-react';
 import { useTables } from '../../hooks/useTables';
 import { useBookings } from '../../hooks/useBookings';
@@ -123,22 +123,20 @@ export const TablesManagement = ({ selectedDate }: TablesManagementProps) => {
               const isExpanded = expandedTable === table.id;
 
               return (
-                <>
-                  <tr key={table.id} className="border-b hover:bg-gray-50">
+                <Fragment key={table.id}>
+                  <tr className="border-b hover:bg-gray-50">
                     <td className="py-2 px-2 sm:py-3 sm:px-4 font-medium text-sm sm:text-base">{table.table_number}</td>
                     <td className="py-2 px-2 sm:py-3 sm:px-4 text-sm sm:text-base">{table.capacity} seats</td>
                     <td className="py-2 px-2 sm:py-3 sm:px-4 text-sm sm:text-base">{tableBookings.length}</td>
                     <td className="py-2 px-2 sm:py-3 sm:px-4">
                       <div className="flex justify-end gap-1 sm:gap-2">
-                        {tableBookings.length > 0 && (
-                          <button
-                            onClick={() => setExpandedTable(isExpanded ? null : table.id)}
-                            className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                            title={isExpanded ? "Collapse" : "View Bookings"}
-                          >
-                            <Unlock size={16} className="sm:size-18" />
-                          </button>
-                        )}
+                        <button
+                          onClick={() => setExpandedTable(isExpanded ? null : table.id)}
+                          className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          title={isExpanded ? "Collapse" : "View Bookings"}
+                        >
+                          <Unlock size={16} className="sm:size-18" />
+                        </button>
                         <button
                           onClick={() => handleDeleteTable(table.id)}
                           className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
@@ -160,7 +158,7 @@ export const TablesManagement = ({ selectedDate }: TablesManagementProps) => {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               );
             })}
           </tbody>

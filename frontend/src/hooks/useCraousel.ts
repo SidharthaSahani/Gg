@@ -1,5 +1,5 @@
 // ============================================
-// FILE: hooks/useCarousel.ts
+// FILE: hooks/useCraousel.ts (Note: keeping your spelling)
 // ============================================
 import { useState, useEffect } from 'react';
 import { carouselService } from '../services/carouselService';
@@ -12,12 +12,14 @@ export const useCarousel = () => {
   const fetchImages = async () => {
     try {
       setIsLoading(true);
-      const data = await carouselService.getImages();
-      setImages(data);
       setError(null);
+      const data = await carouselService.getImages();
+
+      setImages(data);
     } catch (err) {
+
       setError('Failed to fetch carousel images');
-      console.error(err);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -26,10 +28,12 @@ export const useCarousel = () => {
   const uploadImage = async (file: File) => {
     try {
       setIsLoading(true);
-      const newImages = await carouselService.uploadImage(file);
-      setImages(newImages);
       setError(null);
+      const newImages = await carouselService.uploadImage(file);
+
+      setImages(newImages);
     } catch (err) {
+
       setError('Failed to upload image');
       throw err;
     } finally {
@@ -40,10 +44,12 @@ export const useCarousel = () => {
   const deleteImage = async (index: number) => {
     try {
       setIsLoading(true);
-      const newImages = await carouselService.deleteImage(index);
-      setImages(newImages);
       setError(null);
+      const newImages = await carouselService.deleteImage(index);
+
+      setImages(newImages);
     } catch (err) {
+
       setError('Failed to delete image');
       throw err;
     } finally {
@@ -54,10 +60,12 @@ export const useCarousel = () => {
   const updateImage = async (index: number, file: File) => {
     try {
       setIsLoading(true);
-      const newImages = await carouselService.updateImage(index, file);
-      setImages(newImages);
       setError(null);
+      const newImages = await carouselService.updateImage(index, file);
+
+      setImages(newImages);
     } catch (err) {
+
       setError('Failed to update image');
       throw err;
     } finally {
@@ -65,6 +73,7 @@ export const useCarousel = () => {
     }
   };
 
+  // Initial fetch on mount
   useEffect(() => {
     fetchImages();
   }, []);
@@ -73,7 +82,7 @@ export const useCarousel = () => {
     images,
     isLoading,
     error,
-    fetchImages,
+    fetchImages, // ✅ Exposed for refresh button
     uploadImage,
     deleteImage,
     updateImage

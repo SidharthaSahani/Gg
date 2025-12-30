@@ -1,3 +1,6 @@
+// ============================================
+// FILE: hooks/useBookings.ts
+// ============================================
 import { useState, useEffect, useMemo } from 'react';
 import { bookingsApi, Booking } from '../lib/api';
 
@@ -9,12 +12,14 @@ export const useBookings = (selectedDate: string) => {
   const fetchBookings = async () => {
     try {
       setIsLoading(true);
-      const data = await bookingsApi.getAll();
-      setBookings(data);
       setError(null);
+      const data = await bookingsApi.getAll();
+
+      setBookings(data);
     } catch (err) {
-      setError('Failed to fetch bookings');
-      console.error(err);
+
+      setError(err instanceof Error ? err.message : 'Failed to fetch bookings');
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -23,31 +28,37 @@ export const useBookings = (selectedDate: string) => {
   const releaseBooking = async (bookingId: string) => {
     try {
       setIsLoading(true);
-      await bookingsApi.update(bookingId, { status: 'completed' });
-      await fetchBookings();
       setError(null);
+      await bookingsApi.update(bookingId, { status: 'completed' });
+      await fetchBookings(); // Refresh after updating
     } catch (err) {
-      setError('Failed to release booking');
+
+      setError(err instanceof Error ? err.message : 'Failed to release booking');
       throw err;
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Filter bookings by selected date
   const filteredBookings = useMemo(() => {
-    return bookings.filter(booking => booking.booking_date === selectedDate);
+    return bookings.filter(booking => {
+      const bookingDate = booking.booking_date;
+      return bookingDate === selectedDate;
+    });
   }, [bookings, selectedDate]);
 
+  // Fetch bookings when selected date changes
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [selectedDate]);
 
   return {
     bookings,
     filteredBookings,
     isLoading,
     error,
-    fetchBookings,
+    fetchBookings, // ✅ Exposed for refresh button
     releaseBooking
   };
 };

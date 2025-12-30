@@ -1,3 +1,6 @@
+// ============================================
+// FILE: hooks/useTables.ts
+// ============================================
 import { useState, useEffect } from 'react';
 import { tablesApi, RestaurantTable } from '../lib/api';
 
@@ -9,12 +12,14 @@ export const useTables = () => {
   const fetchTables = async () => {
     try {
       setIsLoading(true);
-      const data = await tablesApi.getAll();
-      setTables(data);
       setError(null);
+      const data = await tablesApi.getAll();
+
+      setTables(data);
     } catch (err) {
-      setError('Failed to fetch tables');
-      console.error(err);
+
+      setError(err instanceof Error ? err.message : 'Failed to fetch tables');
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -23,11 +28,12 @@ export const useTables = () => {
   const createTable = async (tableData: { table_number: string; capacity: number }) => {
     try {
       setIsLoading(true);
-      await tablesApi.create({ ...tableData, status: 'available' });
-      await fetchTables();
       setError(null);
+      await tablesApi.create({ ...tableData, status: 'available' });
+      await fetchTables(); // Refresh after creating
     } catch (err) {
-      setError('Failed to create table');
+
+      setError(err instanceof Error ? err.message : 'Failed to create table');
       throw err;
     } finally {
       setIsLoading(false);
@@ -37,17 +43,19 @@ export const useTables = () => {
   const deleteTable = async (id: string) => {
     try {
       setIsLoading(true);
-      await tablesApi.delete(id);
-      await fetchTables();
       setError(null);
+      await tablesApi.delete(id);
+      await fetchTables(); // Refresh after deleting
     } catch (err) {
-      setError('Failed to delete table');
+
+      setError(err instanceof Error ? err.message : 'Failed to delete table');
       throw err;
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Initial fetch on mount
   useEffect(() => {
     fetchTables();
   }, []);
@@ -56,7 +64,7 @@ export const useTables = () => {
     tables,
     isLoading,
     error,
-    fetchTables,
+    fetchTables, // ✅ Exposed for refresh button
     createTable,
     deleteTable
   };

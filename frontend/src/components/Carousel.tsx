@@ -19,7 +19,7 @@ export default function Carousel({ images }: CarouselProps) {
 
   if (images.length === 0) {
     return (
-      <div className="w-full max-w-6xl mx-auto h-64 md:h-96 rounded-xl flex items-center justify-center">
+      <div className="w-full overflow-hidden rounded-xl flex items-center justify-center aspect-[16/9] sm:aspect-[16/7] lg:aspect-[21/9] max-h-[500px]">
         <div className="text-white text-center p-4">
           <h3 className="text-2xl font-bold mb-2">Welcome to Our Restaurant</h3>
           <p className="text-lg">Upload images to showcase your restaurant</p>
@@ -29,8 +29,8 @@ export default function Carousel({ images }: CarouselProps) {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-xl">
-      <div className="relative w-full h-64 md:h-96">
+    <div className="w-full overflow-hidden rounded-xl">
+      <div className="relative w-full aspect-[16/9] sm:aspect-[16/7] lg:aspect-[21/9] max-h-[500px]">
         {images.map((image, index) => (
           <div
             key={index}

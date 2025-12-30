@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { tablesApi, bookingsApi, RestaurantTable, Booking, API_BASE_URL } from '../lib/api';
+import { carouselService } from '../services/carouselService';
 import TableGrid from './TableGrid';
 import BookingForm, { BookingFormData } from './BookingForm';
 import FoodMenu from './FoodMenu';
@@ -36,7 +37,7 @@ export default function UserBooking() {
       const data = await tablesApi.getAll();
       setTables(data);
     } catch (error) {
-      console.error('Error fetching tables:', error);
+
     }
     setLoading(false);
   };
@@ -46,33 +47,22 @@ export default function UserBooking() {
       const data = await bookingsApi.getAll();
       setBookings(data);
     } catch (error) {
-      console.error('Error fetching bookings:', error);
+
     }
   };
 
   const fetchCarouselImages = async () => {
     try {
-     const response = await fetch(`${API_BASE_URL}/api/carousel-images`);
-      if (response.ok) {
-        const images = await response.json();
-        // Validate that images is an array before setting
-        setCarouselImages(Array.isArray(images) ? images : [
-          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
-        ]);
-      } else {
-        // Fallback to sample images if API fails
-        setCarouselImages([
-          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-          'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
-        ]);
-      }
+      const images = await carouselService.getImages();
+      // Validate that images is an array before setting
+      setCarouselImages(Array.isArray(images) ? images : [
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
+      ]);
     } catch (error) {
-      console.error('Error fetching carousel images:', error);
+
       // Fallback to sample images if API fails
       setCarouselImages([
         'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
@@ -102,7 +92,7 @@ export default function UserBooking() {
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
     } catch (error: any) {
-      console.error('Error submitting booking:', error);
+
       // Handle conflict error (time slot already booked)
       if (error.status === 409) {
         alert('This time slot is already booked for the selected table. Please choose a different time slot.');

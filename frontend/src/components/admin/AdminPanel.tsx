@@ -18,9 +18,13 @@ export default function AdminPanel() {
   const { fetchTables } = useTables();
   const { fetchBookings } = useBookings(selectedDate);
 
-  const handleRefreshAll = () => {
-    fetchTables();
-    fetchBookings();
+  const handleRefreshAll = async () => {
+    try {
+      await fetchTables();
+      await fetchBookings();
+    } catch (error) {
+
+    }
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

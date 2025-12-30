@@ -23,7 +23,7 @@ export default function FoodMenu() {
       const data = allItems.filter((item: FoodMenuItem) => item.available);
       setFoodItems(data);
     } catch (error) {
-      console.error('Error fetching food items:', error);
+
     }
     setLoading(false);
   };
@@ -70,20 +70,19 @@ export default function FoodMenu() {
             No items available in this category.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-4">
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition"
-              >
-                <div className="w-full h-32 sm:h-48 overflow-hidden bg-gray-200">
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition flex-shrink-0 w-64">
+                <div className="w-full aspect-square overflow-hidden bg-gray-200">
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                    className="w-full h-full object-contain hover:scale-105 transition duration-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=300&fit=crop';
+                        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=400&h=300';
                     }}
                   />
                 </div>

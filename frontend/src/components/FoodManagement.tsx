@@ -1,3 +1,6 @@
+// ============================================
+// SOLUTION 1: Update FoodManagement.tsx with proper error handling
+// ============================================
 import { useState, useEffect } from 'react';
 import { menuApi, FoodMenuItem, API_BASE_URL } from '../lib/api';
 import { Plus, Trash2, Edit2, RefreshCw } from 'lucide-react';
@@ -28,44 +31,70 @@ export default function FoodManagement() {
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Handle image file selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Preview the image
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      
-      // Upload the image
       uploadImage(file);
     }
   };
 
-  // Upload image to backend
   const uploadImage = async (file: File) => {
     setIsUploading(true);
     try {
       const formData = new FormData();
       formData.append('image', file);
       
+      // Get auth token from localStorage if exists
+      const authData = localStorage.getItem('auth');
+      const headers: HeadersInit = {};
+      
+      if (authData) {
+        try {
+          const auth = JSON.parse(authData);
+          if (auth.token) {
+            headers['Authorization'] = `Bearer ${auth.token}`;
+          }
+        } catch (e) {
+
+        }
+      }
+      
+
+      
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         body: formData,
+        headers: headers,
       });
       
+
+      
       if (!response.ok) {
-        throw new Error('Image upload failed');
+        const errorText = await response.text();
+
+        throw new Error(`Image upload failed: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
-      setFormData(prev => ({ ...prev, image_url: data.url }));
+
+      
+      // Handle different response formats
+      const imageUrl = data.url || data.data?.url || data.imageUrl;
+      if (!imageUrl) {
+        throw new Error('No image URL in response');
+      }
+      
+      setFormData(prev => ({ ...prev, image_url: imageUrl }));
     } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
+
+      alert(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
@@ -76,18 +105,28 @@ export default function FoodManagement() {
   }, []);
 
   const fetchFoodItems = async () => {
+    
+    setIsRefreshing(true);
     try {
       const data = await menuApi.getAll();
+
       setFoodItems(data);
     } catch (error) {
-      console.error('Error fetching food items:', error);
+
+      alert('Failed to fetch food items. Please check your connection.');
+    } finally {
+      setIsRefreshing(false);
     }
+  };
+
+  const handleRefresh = () => {
+    
+    fetchFoodItems();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate required fields
     if (!formData.name.trim()) {
       alert('Please enter a food name');
       return;
@@ -126,7 +165,7 @@ export default function FoodManagement() {
       setShowAddForm(false);
       fetchFoodItems();
     } catch (error) {
-      console.error('Error saving food item:', error);
+
       alert('Failed to save food item. Please try again.');
     }
     setLoading(false);
@@ -153,7 +192,7 @@ export default function FoodManagement() {
       await menuApi.delete(id);
       fetchFoodItems();
     } catch (error) {
-      console.error('Error deleting food item:', error);
+
     }
   };
 
@@ -180,11 +219,12 @@ export default function FoodManagement() {
         <h3 className="text-xl sm:text-xl font-bold text-gray-800">Food Menu Management</h3>
         <div className="flex gap-2">
           <button
-            onClick={fetchFoodItems}
-            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm sm:text-base"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <RefreshCw size={16} className="sm:size-18" />
-            Refresh
+            <RefreshCw size={16} className={`sm:size-18 ${isRefreshing ? 'animate-spin' : ''}`} />
+            {isRefreshing ? 'Refreshing...' : 'Refresh'}
           </button>
           <button
             onClick={() => {
@@ -293,7 +333,7 @@ export default function FoodManagement() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image
+              Image *
             </label>
             <input
               type="file"
@@ -303,7 +343,10 @@ export default function FoodManagement() {
               className="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             />
             {isUploading && (
-              <p className="text-sm text-gray-500 mt-1">Uploading image...</p>
+              <p className="text-sm text-blue-600 mt-1 flex items-center gap-2">
+                <RefreshCw size={14} className="animate-spin" />
+                Uploading image...
+              </p>
             )}
             {(imagePreview || formData.image_url) && (
               <div className="mt-2">
@@ -311,15 +354,10 @@ export default function FoodManagement() {
                 <img
                   src={imagePreview || formData.image_url}
                   alt="Preview"
-                  className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg"
+                  className="w-24 h-24 sm:w-32 sm:h-32 aspect-square object-cover rounded-lg"
                 />
               </div>
             )}
-            <input
-              type="hidden"
-              name="image_url"
-              value={formData.image_url}
-            />
           </div>
 
           <div className="flex gap-3 pt-4">
@@ -332,7 +370,7 @@ export default function FoodManagement() {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isUploading}
               className="flex-1 px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-50 text-sm sm:text-base"
             >
               {loading ? 'Saving...' : editingId ? 'Update Item' : 'Add Item'}
@@ -360,10 +398,10 @@ export default function FoodManagement() {
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
+                    className="w-10 h-10 sm:w-12 sm:h-12 aspect-square object-cover rounded"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=100&h=100&fit=crop';
+                        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=100&h=100';
                     }}
                   />
                 </td>

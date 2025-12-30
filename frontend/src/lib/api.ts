@@ -1,5 +1,16 @@
 // lib/api.ts - FIXED VERSION
-export const API_BASE_URL = 'https://gg-d25n.onrender.com';
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+  // Check if we're running in development mode or production
+  if (typeof window !== 'undefined') {
+    // Client-side: Use localhost for development, production URL otherwise
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    return isLocalhost ? 'http://localhost:8080' : 'https://gg-d25n.onrender.com';
+  }
+  return 'https://gg-d25n.onrender.com'; // Default to production
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 // Custom error class
 class HttpError extends Error {
@@ -21,9 +32,23 @@ interface ApiResponse<T> {
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  // Get admin token from localStorage if available
+  const adminSession = localStorage.getItem('adminSession');
+  let authHeader = {};
+  
+  if (adminSession) {
+    // For demo purposes, we'll use a simple approach
+    // In a real application, you would use a proper JWT token
+    const sessionData = JSON.parse(adminSession);
+    // Create a simple token based on the session
+    const token = btoa(encodeURIComponent(sessionData.email));
+    authHeader = { 'Authorization': `Bearer ${token}` };
+  }
+  
   const config: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
+      ...authHeader, // Include auth header if available
       ...options.headers,
     },
     ...options,
@@ -51,7 +76,7 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
     // Otherwise return the whole response (for legacy endpoints)
     return result as T;
   } catch (error) {
-    console.error(`API request failed: ${error}`);
+    
     throw error;
   }
 }
@@ -60,9 +85,20 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
 async function apiUpload<T>(endpoint: string, formData: FormData): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  // Get admin token from localStorage if available
+  const adminSession = localStorage.getItem('adminSession');
+  let authHeader = {};
+  
+  if (adminSession) {
+    const sessionData = JSON.parse(adminSession);
+    const token = btoa(encodeURIComponent(sessionData.email));
+    authHeader = { 'Authorization': `Bearer ${token}` };
+  }
+  
   try {
     const response = await fetch(url, {
       method: 'POST',
+      headers: authHeader, // Include auth header for admin uploads
       body: formData,
       // Don't set Content-Type, browser will set it with boundary
     });
@@ -78,7 +114,7 @@ async function apiUpload<T>(endpoint: string, formData: FormData): Promise<T> {
     const result: ApiResponse<T> = await response.json();
     return 'data' in result ? (result.data as T) : (result as T);
   } catch (error) {
-    console.error(`Upload failed: ${error}`);
+    
     throw error;
   }
 }
@@ -191,10 +227,21 @@ export const carouselApi = {
     }),
     
   update: async (index: number, file: File) => {
+    // Get admin token from localStorage if available
+    const adminSession = localStorage.getItem('adminSession');
+    let headers: Record<string, string> = {};
+    
+    if (adminSession) {
+      const sessionData = JSON.parse(adminSession);
+      const token = btoa(encodeURIComponent(sessionData.email));
+      headers = { 'Authorization': `Bearer ${token}` };
+    }
+    
     const formData = new FormData();
     formData.append('image', file);
     return fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
       method: 'PUT',
+      headers: headers, // Include auth header for admin operations
       body: formData
     }).then(async (response) => {
       if (!response.ok) {
@@ -209,7 +256,7 @@ export const carouselApi = {
   upload: (file: File) => {
     const formData = new FormData();
     formData.append('image', file);
-    return apiUpload<{ url: string }>('/api/upload-carousel', formData);
+    return apiUpload<{ url: string }>('/api/upload/carousel', formData);
   }
 };
 

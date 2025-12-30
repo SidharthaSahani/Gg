@@ -1,3 +1,6 @@
+// ============================================
+// FILE: services/carouselService.ts - FIXED
+// ============================================
 import { API_BASE_URL } from '../lib/api';
 
 const FALLBACK_IMAGES = [
@@ -6,83 +9,168 @@ const FALLBACK_IMAGES = [
   'https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
 ];
 
+// Helper to get auth headers
+const getAuthHeaders = (): Record<string, string> => {
+  try {
+    const adminSession = localStorage.getItem('adminSession');
+    if (adminSession) {
+      const sessionData = JSON.parse(adminSession);
+      if (sessionData.email) {
+        const token = btoa(encodeURIComponent(sessionData.email));
+        return { 'Authorization': `Bearer ${token}` };
+      }
+    }
+  } catch (error) {
+
+  }
+  return {};
+};
+
 export const carouselService = {
+  // Get all carousel images
   async getImages(): Promise<string[]> {
     try {
+
       const response = await fetch(`${API_BASE_URL}/api/carousel-images`);
+      
       if (response.ok) {
-        const images = await response.json();
-        return Array.isArray(images) ? images : FALLBACK_IMAGES;
+        const data = await response.json();
+        
+        
+        // Handle response format: { success: true, data: [...] }
+        const images = data.data || data.images || data;
+        
+        if (Array.isArray(images) && images.length > 0) {
+          return images;
+        }
       }
+      
+
       return FALLBACK_IMAGES;
     } catch (error) {
-      console.error('Error fetching carousel images:', error);
+
       return FALLBACK_IMAGES;
     }
   },
 
+  // ✅ FIXED: Upload single carousel image
   async uploadImage(file: File): Promise<string[]> {
-    const formData = new FormData();
-    formData.append('image', file);
+    try {
 
-    const uploadResponse = await fetch(`${API_BASE_URL}/api/upload-carousel`, {
-      method: 'POST',
-      body: formData,
-    });
+      
+      const formData = new FormData();
+      formData.append('image', file);
 
-    if (!uploadResponse.ok) {
-      throw new Error('Image upload failed');
+      // ✅ FIXED URL: /api/upload/carousel
+      const response = await fetch(`${API_BASE_URL}/api/upload/carousel`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        
+        throw new Error(errorData.error || `Upload failed with status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      
+      // Extract images from response
+      const images = result.data?.images || result.images || [];
+      return Array.isArray(images) && images.length > 0 ? images : await this.getImages();
+    } catch (error) {
+
+      throw error;
     }
-
-    const { url } = await uploadResponse.json();
-    const currentImages = await this.getImages();
-    const newImages = [...currentImages, url];
-
-    return this.updateImages(newImages);
   },
 
+  // Update all carousel images
   async updateImages(images: string[]): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/api/carousel-images`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ images }),
-    });
+    try {
 
-    if (!response.ok) {
-      throw new Error('Failed to update carousel images');
+      
+      const response = await fetch(`${API_BASE_URL}/api/carousel-images`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
+        },
+        body: JSON.stringify({ images }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Update failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      
+      const updatedImages = result.data?.images || result.images || [];
+      return Array.isArray(updatedImages) ? updatedImages : [];
+    } catch (error) {
+
+      throw error;
     }
-
-    const result = await response.json();
-    return Array.isArray(result.images) ? result.images : [];
   },
 
+  // Delete carousel image by index
   async deleteImage(index: number): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
-      method: 'DELETE',
-    });
+    try {
 
-    if (!response.ok) {
-      throw new Error('Failed to delete carousel image');
+      
+      const response = await fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Delete failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      
+      const updatedImages = result.data?.images || result.images || [];
+      return Array.isArray(updatedImages) ? updatedImages : [];
+    } catch (error) {
+
+      throw error;
     }
-
-    const result = await response.json();
-    return Array.isArray(result.images) ? result.images : [];
   },
 
+  // Update single carousel image by index
   async updateImage(index: number, file: File): Promise<string[]> {
-    const formData = new FormData();
-    formData.append('image', file);
+    try {
 
-    const response = await fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
-      method: 'PUT',
-      body: formData,
-    });
+      
+      const formData = new FormData();
+      formData.append('image', file);
 
-    if (!response.ok) {
-      throw new Error('Failed to update carousel image');
+      const response = await fetch(`${API_BASE_URL}/api/carousel-images/${index}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Update failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      
+      const updatedImages = result.data?.images || result.images || [];
+      return Array.isArray(updatedImages) ? updatedImages : [];
+    } catch (error) {
+
+      throw error;
     }
-
-    const result = await response.json();
-    return Array.isArray(result.images) ? result.images : [];
   }
 };
