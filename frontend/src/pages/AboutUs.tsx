@@ -17,7 +17,7 @@ export default function AboutUs() {
       
       <main className="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 flex-grow w-full">
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-4">About GrillS & Gather</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-4">About Grills & Gather</h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
             Discover our story, mission, and commitment to providing exceptional dining experiences
           </p>
@@ -27,7 +27,7 @@ export default function AboutUs() {
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">Our Story</h2>
             <p className="text-gray-600 mb-4">
-              Grill & Gathering was founded with a simple vision: to create a place where friends and family 
+              Grills & Gather was founded with a simple vision: to create a place where friends and family 
               could come together to enjoy exceptional food in a warm, welcoming atmosphere. What started as 
               a small family venture has grown into a beloved dining destination known for our commitment 
               to quality and hospitality.
@@ -82,7 +82,7 @@ export default function AboutUs() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-bold mb-4">Grill & Gathering</h3>
+              <h3 className="text-lg font-bold mb-4">Grills & Gather</h3>
               <p className="text-gray-300">Experience the finest dining with our delicious food and excellent service.</p>
             </div>
             <div>
@@ -108,7 +108,7 @@ export default function AboutUs() {
                 <li>📞 9840923097 </li>
                 <li>📞 9848675285 </li>
                 <li>✉️ info@grillandgathering.com</li>
-                <li>📍 Grills and Gather ,Balkot </li>
+                <li>📍 Grills & Gather ,Balkot </li>
               </ul>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function AboutUs() {
                 allowFullScreen={true} 
                 loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Grill & Gathering Location Map"
+                title="Grills & Gather Location Map"
               />
             </div>
           </div>
