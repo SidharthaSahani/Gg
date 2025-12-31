@@ -43,7 +43,7 @@ function AppRoutes() {
       {/* WhatsApp Icon - Fixed at bottom right (only on home, about, and contact pages) */}
       {(location.pathname === '/' || location.pathname === '/about') && (
         <a 
-          href="https://wa.me/9779800000000" 
+          href="https://wa.me/984-8675285" 
           target="_blank" 
           rel="noopener noreferrer"
           className="fixed bottom-6 right-6 z-50 shadow-lg hover:scale-105 transition-transform duration-300"
