@@ -76,6 +76,15 @@ export default function AboutUs() {
           
 
         </div>
+        
+        <div className="text-center mb-12">
+          <p className="text-gray-600 mb-4">
+            Ready to experience our delicious food? <a href="/" className="text-blue-600 hover:underline">Book your table now</a> for an unforgettable dining experience.
+          </p>
+          <p className="text-gray-600">
+            Visit our <a href="/" className="text-blue-600 hover:underline">home page</a> to make a reservation or learn more about our menu.
+          </p>
+        </div>
       </main>
       
       <footer id="contact-footer" className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-8 mt-auto">

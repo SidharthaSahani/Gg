@@ -11,7 +11,26 @@ export default function CustomerBooking() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto py-4 sm:py-6 flex-grow w-full">
+        <h1 className="sr-only">Grill & Gather - Book Your Table Online</h1>
+        <div className="sr-only">
+          <p>Welcome to Grill & Gather, your premier dining destination. Book your table online and enjoy delicious food in a comfortable atmosphere.</p>
+        </div>
         <UserBooking />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-8 text-center">
+          <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">About Grill & Gather</h2>
+            <p className="text-gray-600 mb-4 max-w-3xl mx-auto">
+              Discover our story and what makes us special. Learn more about our commitment to quality food and exceptional service.
+            </p>
+            <a 
+              href="/about" 
+              className="inline-block px-6 py-3 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition"
+            >
+              Learn More About Us
+            </a>
+          </div>
+        </div>
       </main>
       
       <footer id="contact-footer" className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-8 mt-auto">
